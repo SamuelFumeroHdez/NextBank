@@ -1,0 +1,28 @@
+version: 2
+
+updates:
+  - package-ecosystem: maven
+    directory: /account-service
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: [dependencies, account-service]
+    groups:
+      # Agrupamos las actualizaciones menores en un solo PR en lugar de recibir
+      # uno por dependencia. Las mayores llegan por separado, porque suelen
+      # traer cambios incompatibles que hay que revisar de una en una.
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: docker
+    directory: /account-service
+    schedule:
+      interval: weekly
+    labels: [dependencies, docker]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels: [dependencies, ci]
