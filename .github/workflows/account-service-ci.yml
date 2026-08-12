@@ -48,14 +48,6 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Apply Flyway migrations
-        run: |
-          mvn -B -f account-service/pom.xml flyway:migrate \
-            -Dflyway.url=jdbc:postgresql://localhost:5432/nextbank_account \
-            -Dflyway.user=nextbank \
-            -Dflyway.password=nextbank \
-            -Dflyway.locations=filesystem:account-service/src/main/resources/db/migration
-
       - name: Make mvnw executable
         run: chmod +x mvnw
 
