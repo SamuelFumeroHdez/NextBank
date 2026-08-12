@@ -2,9 +2,9 @@ name: CodeQL
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   schedule:
     # Semanal: detecta vulnerabilidades descubiertas despues del ultimo commit.
     - cron: '0 6 * * 1'
@@ -13,6 +13,21 @@ jobs:
   analyze:
     name: Analyze Java
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: nextbank_account
+          POSTGRES_USER: nextbank
+          POSTGRES_PASSWORD: nextbank
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     permissions:
       actions: read
@@ -34,6 +49,14 @@ jobs:
         with:
           languages: java-kotlin
           queries: security-and-quality
+
+      - name: Apply Flyway migrations
+        run: |
+          mvn -B -f account-service/pom.xml flyway:migrate \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/nextbank_account \
+            -Dflyway.user=nextbank \
+            -Dflyway.password=nextbank \
+            -Dflyway.locations=filesystem:account-service/src/main/resources/db/migration
 
       # Compilamos sin tests: CodeQL solo necesita el bytecode para analizar.
       - name: Build all services
