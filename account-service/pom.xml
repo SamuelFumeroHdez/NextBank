@@ -161,6 +161,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.15</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -260,64 +261,76 @@
 				</executions>
 			</plugin>
             <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>${jooq.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-jooq-sources</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <jdbc>
-                        <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql://localhost:5432/nextbank_account</url>
-                        <user>nextbank</user>
-                        <password>nextbank</password>
-                    </jdbc>
-                    <generator>
-                        <database>
-                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
-                            <inputSchema>public</inputSchema>
-                            <excludes>flyway_schema_history</excludes>
-                            <forcedTypes>
-                                <forcedType>
-                                    <userType>java.time.Instant</userType>
-                                    <converter>org.jooq.Converter.ofNullable(
-                                        java.time.OffsetDateTime.class,
-                                        java.time.Instant.class,
-                                        java.time.OffsetDateTime::toInstant,
-                                        i -> i.atOffset(java.time.ZoneOffset.UTC)
-                                        )</converter>
-                                    <includeTypes>TIMESTAMP\ WITH\ TIME\ ZONE</includeTypes>
-                                </forcedType>
-                            </forcedTypes>
-                        </database>
-                        <generate>
-                            <javaTimeTypes>true</javaTimeTypes>
-                            <deprecated>false</deprecated>
-                            <records>true</records>
-                            <pojos>false</pojos>
-                        </generate>
-                        <target>
-                            <packageName>com.nextbank.account.infrastructure.jooq</packageName>
-                            <directory>target/generated-sources/jooq</directory>
-                        </target>
-                    </generator>
-                </configuration>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
             </plugin>
 		</plugins>
 	</build>
-
+    <profiles>
+        <profile>
+            <id>jooq-codegen</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <version>${jooq.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-jooq-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <jdbc>
+                                <driver>org.postgresql.Driver</driver>
+                                <url>jdbc:postgresql://localhost:5432/nextbank_account</url>
+                                <user>nextbank</user>
+                                <password>nextbank</password>
+                            </jdbc>
+                            <generator>
+                                <database>
+                                    <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                                    <inputSchema>public</inputSchema>
+                                    <excludes>flyway_schema_history</excludes>
+                                    <forcedTypes>
+                                        <forcedType>
+                                            <userType>java.time.Instant</userType>
+                                            <converter>org.jooq.Converter.ofNullable(
+                                                java.time.OffsetDateTime.class,
+                                                java.time.Instant.class,
+                                                java.time.OffsetDateTime::toInstant,
+                                                i -> i.atOffset(java.time.ZoneOffset.UTC)
+                                                )</converter>
+                                            <includeTypes>TIMESTAMP\ WITH\ TIME\ ZONE</includeTypes>
+                                        </forcedType>
+                                    </forcedTypes>
+                                </database>
+                                <generate>
+                                    <javaTimeTypes>true</javaTimeTypes>
+                                    <deprecated>false</deprecated>
+                                    <records>true</records>
+                                    <pojos>false</pojos>
+                                </generate>
+                                <target>
+                                    <packageName>com.nextbank.account.infrastructure.jooq</packageName>
+                                    <directory>src/main/java</directory>
+                                </target>
+                            </generator>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

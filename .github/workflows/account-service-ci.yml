@@ -2,11 +2,12 @@ name: account-service CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - 'account-service/**'
       - '.github/workflows/account-service-ci.yml'
   pull_request:
+    branches: [main, develop]
     paths:
       - 'account-service/**'
       - '.github/workflows/account-service-ci.yml'
@@ -47,6 +48,17 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
+      - name: Apply Flyway migrations
+        run: |
+          mvn -B -f account-service/pom.xml flyway:migrate \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/nextbank_account \
+            -Dflyway.user=nextbank \
+            -Dflyway.password=nextbank \
+            -Dflyway.locations=filesystem:account-service/src/main/resources/db/migration
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
       # Los tests de integracion levantan PostgreSQL via Testcontainers.
       # Los runners de GitHub traen Docker preinstalado, asi que no hay que
       # configurar nada: Testcontainers lo detecta solo.
@@ -55,7 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
-          mvn -B verify
+          ./mvnw -B verify
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}

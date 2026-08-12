@@ -84,11 +84,11 @@ public class Outbox extends TableImpl<OutboxRecord> {
      * The column <code>public.outbox.occurred_at</code>.
      */
     public final TableField<OutboxRecord, Instant> OCCURRED_AT = createField(DSL.name("occurred_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "", org.jooq.Converter.ofNullable(
-                                            java.time.OffsetDateTime.class,
-                                            java.time.Instant.class,
-                                            java.time.OffsetDateTime::toInstant,
-                                            i -> i.atOffset(java.time.ZoneOffset.UTC)
-                                            ));
+                                                    java.time.OffsetDateTime.class,
+                                                    java.time.Instant.class,
+                                                    java.time.OffsetDateTime::toInstant,
+                                                    i -> i.atOffset(java.time.ZoneOffset.UTC)
+                                                    ));
 
     /**
      * The column <code>public.outbox.published</code>.

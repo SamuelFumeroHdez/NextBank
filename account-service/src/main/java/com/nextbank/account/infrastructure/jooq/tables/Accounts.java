@@ -85,11 +85,11 @@ public class Accounts extends TableImpl<AccountsRecord> {
      * The column <code>public.accounts.opened_at</code>.
      */
     public final TableField<AccountsRecord, Instant> OPENED_AT = createField(DSL.name("opened_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "", org.jooq.Converter.ofNullable(
-                                            java.time.OffsetDateTime.class,
-                                            java.time.Instant.class,
-                                            java.time.OffsetDateTime::toInstant,
-                                            i -> i.atOffset(java.time.ZoneOffset.UTC)
-                                            ));
+                                                    java.time.OffsetDateTime.class,
+                                                    java.time.Instant.class,
+                                                    java.time.OffsetDateTime::toInstant,
+                                                    i -> i.atOffset(java.time.ZoneOffset.UTC)
+                                                    ));
 
     /**
      * The column <code>public.accounts.version</code>.
