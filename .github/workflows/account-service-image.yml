@@ -65,7 +65,7 @@ jobs:
       # Escanear la imagen final, no solo las dependencias: aqui se detectan
       # tambien vulnerabilidades del sistema base (Alpine, JRE).
       - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           format: 'sarif'

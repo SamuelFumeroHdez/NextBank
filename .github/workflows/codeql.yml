@@ -2,9 +2,9 @@ name: CodeQL
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   schedule:
     # Semanal: detecta vulnerabilidades descubiertas despues del ultimo commit.
     - cron: '0 6 * * 1'
