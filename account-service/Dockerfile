@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests -B
 RUN java -Djarmode=tools -jar target/*.jar extract --layers --launcher --destination extracted
 
 # ---------- Stage 2: runtime ----------
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM eclipse-temurin:25-jre-alpine AS runtime
 
 # Usuario sin privilegios: si alguien compromete el proceso, no es root dentro
 # del contenedor. Requisito basico en cualquier entorno regulado.
